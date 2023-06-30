@@ -1,0 +1,21 @@
+.myCustomFrame_CSK_Module_MultiColorSelection {
+  border-style: solid;
+  border-width: 1px;
+  border-color: grey;
+  margin: 6px;
+}
+
+.myCustomSlider_CSK_Module_MultiColorSelection {
+  width: 98%;
+  min-width: none;
+  max-width: none;
+}
+
+.myViewer_CSK_Module_MultiColorSelection > div > div {
+  max-height: 800px;
+  min-height: 800px;
+}
+
+.myCustomPlaceholder5pxHeight_CSK_Module_MultiColorSelection {
+  min-height: 5px;
+}

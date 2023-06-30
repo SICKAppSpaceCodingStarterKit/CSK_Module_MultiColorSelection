@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<manifest>
+    <application name="CSK_Module_MultiColorSelection">
+        <crown name="CSK_Module_MultiColorSelection">
+            <desc>This is an automatically generated CROWN (description not necessary).</desc>
+            <serves/>
+        </crown>
+        <crown name="CSK_MultiColorSelection">
+            <trait>released</trait>
+            <desc>Module to provide color selection functionality. Multiple instances can be created and will run in multiple threads on the device. +
+This module provides a UI for all relevant features. +
+{empty} +
+Typically to configure this module to work with other modules you should do this: +
+{empty} +
+1) If multiple instances are needed, these can be added via addInstance(). +
+2) Select the instance you want to configur via setInstance(). +
+3) Set the event providing the images to be processed e.g. via setRegisterEvent('CSK_ImagePlayer.OnNewImage'). +
+4) Other modules can react on the results of this module (see OnNewResultNUM and setResultOutput). +</desc>
+            <enum name="ImageChannel" trait="released">
+                <desc>HSV Image Channel</desc>
+                <item desc="Hue channel of the image." name="Hue">Hue</item>
+                <item desc="Value channel of the image." name="Value">Value</item>
+                <item desc="Saturation channel of the image." name="Saturation">Saturation</item>
+            </enum>
+            <enum name="ColorMode" trait="released">
+                <desc>Image type to process.</desc>
+                <item desc="Color mode." name="Color">Color</item>
+                <item desc="Grey value mode." name="Grey">Grey</item>
+            </enum>
+            <enum name="ROI_Type" trait="released">
+                <desc>Type of ROI.</desc>
+                <item desc="Circle" name="Circle">Circle</item>
+                <item desc="Rectangle" name="Rectangle">Rectangle</item>
+            </enum>
+            <enum name="ResultOutputMode" trait="released">
+                <desc>Content of result.</desc>
+                <item desc="TOTAL: Forward only total result (e.g. TRUE)." name="TOTAL">TOTAL</item>
+                <item desc="TOTAL+SUBRESULTS: Forward total result and subresutls (e.g. FALSE, TRUE, TRUE, FALSE)." name="TOTAL_SUBRESULTS">TOTAL+SUBRESULTS</item>
+                <item desc="TOTAL+SUBVALUES: Forward total result and sub values (e.g. FALSE, 1,5,4)." name="TOTAL_SUBVALUES">TOTAL+SUBVALUES</item>
+            </enum>
+            <serves>
+                <event name="OnNewStatusLoadParameterOnReboot">
+                    <desc>Notify status if parameters should be loaded on app/device boot up.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnPersistentDataModuleAvailable">
+                    <desc>Notify status if features of CSK_PersistentData module are available.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewInstanceList">
+                    <desc>Notify list of instances.</desc>
+                    <param desc="List of instances" multiplicity="1" name="list" type="string"/>
+                </event>
+                <event name="OnNewProcessingParameter">
+                    <desc>Event to share processing parameters to the instances threads.</desc>
+                    <param desc="Number of the instance to receive the parameter." multiplicity="1" name="objectNo" type="int"/>
+                    <param desc="Name of the parameter." multiplicity="1" name="parameter" type="string"/>
+                    <param desc="Value to set." multiplicity="1" name="value" type="auto"/>
+                    <param desc="If parameter is for a specific colorObject, its number." multiplicity="?" name="colorObject" type="int"/>
+                </event>
+                <event name="OnNewSelectedInstance">
+                    <desc>Notify selected instance.</desc>
+                    <param desc="Selected instance" multiplicity="1" name="selectedObject" type="int"/>
+                </event>
+                <event name="OnDataLoadedOnReboot">
+                    <desc>Event to call if module tried to load parameters and should be ready.</desc>
+                </event>
+                <event name="OnNewResultNUM">
+                    <desc>Example of dynamically created event to provide result of instance. +
+NUM will be replaced by the number of instance (e.g. "OnNewResult1"). +
+INFO: Other modules can check via "Script.isServedAsEvent" if event of sepecific instance exists.</desc>
+                    <param desc="Total result." multiplicity="1" name="result" type="bool"/>
+                    <param desc="Optional sub Results. See also setResultOutput()." multiplicity="?" name="subResults" type="string"/>
+                    <param desc="Optional timestamp." multiplicity="?" name="timestamp" type="int"/>
+                </event>
+                <event name="OnNewPreFilterAOIChannel">
+                    <desc>Notify channel of prefiltering AOI.</desc>
+                    <param desc="Channel (Hue, Saturation or Value)." multiplicity="1" name="channel" type="string"/>
+                </event>
+                <event name="OnPreFilterAOIActive">
+                    <desc>Notify activation status of AOI prefilter.</desc>
+                    <param desc="Status" multiplicity="1" name="active" type="bool"/>
+                </event>
+                <event name="OnPreFilterAOIValues">
+                    <desc>Notify values of AOI prefilter range.</desc>
+                    <param desc="Range" multiplicity="+" name="range" type="int"/>
+                </event>
+                <event name="OnNewSelectedStep">
+                    <desc>Notify selected processing step of this module.</desc>
+                    <param desc="Step X of 5." multiplicity="1" name="step" type="string"/>
+                </event>
+                <event name="OnPreFilterAONIActive">
+                    <desc>Notify activation status of AONI prefilter.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewPreFilterAONIChannel">
+                    <desc>Notify channel of prefiltering AONI.</desc>
+                    <param desc="Channel (Hue, Saturation or Value)." multiplicity="1" name="channel" type="string"/>
+                </event>
+                <event name="OnPreFilterAONIValues">
+                    <desc>Notify values of AONI prefilter range.</desc>
+                    <param desc="Range" multiplicity="+" name="range" type="int"/>
+                </event>
+                <event name="OnShowAOI">
+                    <desc>Notify if AOI should be shown on UI.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewShowImageChannel">
+                    <desc>Notify image channel to use in UI viewer.</desc>
+                    <param desc="Channel (Hue, Saturation or Value)." multiplicity="1" name="channel" type="string"/>
+                </event>
+                <event name="OnNewColorObjectSelection">
+                    <desc>Notify currently selected color object.</desc>
+                    <param desc="No. of selected object." multiplicity="1" name="selection" type="int"/>
+                </event>
+                <event name="OnNewObjectName">
+                    <desc>Notify object name of currently selected color object.</desc>
+                    <param desc="Name" multiplicity="1" name="name" type="string"/>
+                </event>
+                <event name="OnNewStatusColorActive">
+                    <desc>Notify if currently selected color is active.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewColorValue">
+                    <desc>Notify current color value of selected color object.</desc>
+                    <param desc="Value" multiplicity="1" name="colorValue" type="int"/>
+                </event>
+                <event name="OnNewColorMode">
+                    <desc>Notify current status of colorMode.</desc>
+                    <param desc="Mode ('Color' or 'Grey')." multiplicity="1" name="mode" type="string"/>
+                </event>
+                <event name="OnNewValueTolerance">
+                    <desc>Notify tolerance value of currently selected color.</desc>
+                    <param desc="Value" multiplicity="1" name="tolerance" type="int"/>
+                </event>
+                <event name="OnNewMinBlobSize">
+                    <desc>Notify minimum of allowed size of blobs to be found.</desc>
+                    <param desc="Size" multiplicity="1" name="size" type="int"/>
+                </event>
+                <event name="OnNewMaxBlobSize">
+                    <desc>Notify maximum allowed size of blobs to be found.</desc>
+                    <param desc="Size" multiplicity="1" name="size" type="int"/>
+                </event>
+                <event name="OnNewStatusPixelRefactorActive">
+                    <desc>Notify if refactoring pixels to mm² is active for currently selected color.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewPixelRefactorUnit">
+                    <desc>Notify currently used unit for blobs.</desc>
+                    <param desc="Unit ('px' or 'mm²')" multiplicity="1" name="unit" type="string"/>
+                </event>
+                <event name="OnNewPixelRefactor">
+                    <desc>Notify currently used pixel refactor to calculate mm² out of pixels.</desc>
+                    <param desc="Factor" multiplicity="1" name="refactor" type="float"/>
+                </event>
+                <event name="OnNewStatusROIActive">
+                    <desc>Notify if ROI is active for currently selected color.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewMinGood">
+                    <desc>Notify minimum allowed amount of blobs to be found.</desc>
+                    <param desc="Minimum allowed amount." multiplicity="1" name="minGood" type="int"/>
+                </event>
+                <event name="OnNewMaxGood">
+                    <desc>Notify maximum allowed amount of blobs to be found.</desc>
+                    <param desc="Maximum allowed amount." multiplicity="1" name="maxGood" type="int"/>
+                </event>
+                <event name="OnNewStatusMaskActive">
+                    <desc>Notify if masks are active for currently selected color.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnROIEditorActive">
+                    <desc>Notify if ROI editor is currently active in UI.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnMaskEditorActive">
+                    <desc>Notify current status of maskEditor.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnPipetteActive">
+                    <desc>Notify if pipette mode is currently active in UI.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewSizeSmallestBlob">
+                    <desc>Notify size of smallest found blob within allowed range.</desc>
+                    <param desc="Size" multiplicity="1" name="size" type="string"/>
+                </event>
+                <event name="OnNewSizeBiggestBlob">
+                    <desc>Notify size of biggest found blob within allowed range.</desc>
+                    <param desc="Size" multiplicity="1" name="size" type="string"/>
+                </event>
+                <event name="OnNewFoundBlobs">
+                    <desc>Notify amount of found blobs.</desc>
+                    <param desc="Amount of found blobs." multiplicity="1" name="amount" type="string"/>
+                </event>
+                <event name="OnNewValueToForwardNUM">
+                    <desc>Example of dynamically created event to Forward thread internal values to e.g. be notified with single event related to UI. +
+NUM will be replaced by the number of instance (e.g. "OnNewValueToForward1"). +
+INFO: Other modules can check via "Script.isServedAsEvent" if event of sepecific instance exists.</desc>
+                    <param desc="Eventname" multiplicity="1" name="eventname" type="string"/>
+                    <param desc="Value to forward." multiplicity="1" name="value" type="auto"/>
+                </event>
+                <event name="OnNewImageQueue">
+                    <desc>Notify size of image queue.</desc>
+                    <param desc="Queue size." multiplicity="1" name="queueSize" type="string"/>
+                </event>
+                <event name="OnNewProcessingTime">
+                    <desc>Notify processing time.</desc>
+                    <param desc="Needed processing time in ms." multiplicity="1" name="time" type="string"/>
+                </event>
+                <event name="OnNewStatusShowImage">
+                    <desc>Notify if image should be showed in UI.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewValueUpdateNUM">
+                    <desc>Example of dynamically created event to forward thread internal values to main thread to keep values in sync between threads. +
+NUM will be replaced by the number of instance (e.g. "OnNewValueToForward1"). +
+INFO: Other modules can check via "Script.isServedAsEvent" if event of sepecific instance exists.</desc>
+                    <param desc="Instance value is related to." multiplicity="1" name="instance" type="int"/>
+                    <param desc="Parameter name to update." multiplicity="1" name="parameter" type="string"/>
+                    <param desc="Value to update." multiplicity="1" name="value" type="auto"/>
+                    <param desc="Optionally color object for the value update." multiplicity="?" name="selectedObject" type="int"/>
+                </event>
+                <event name="OnNewResult">
+                    <desc>Notify result of processing of currently selected instance. See also setResultOutput(). +
+Will forward the result of currently selected instance. (see setInstance()). +</desc>
+                    <param desc="Result" multiplicity="1" name="result" type="string"/>
+                </event>
+                <event name="OnNewTotalResult">
+                    <desc>Notify total result of currently selected instance.</desc>
+                    <param desc="Total result." multiplicity="1" name="result" type="bool"/>
+                </event>
+                <event name="OnNewResultOutput">
+                    <desc>Notify currently selected modus to forward results via event OnNewResult / OnNewResultNUM. +
+See setResultOutput().</desc>
+                    <param desc="Mode" multiplicity="1" name="mode" type="string"/>
+                </event>
+                <event name="OnNewParameterName">
+                    <desc>Notify name of the parameters if saved/loaded via the CSK_PersistentData module for currently selected camera instance.</desc>
+                    <param desc="Name" multiplicity="1" name="parametersName" type="string"/>
+                </event>
+                <event name="OnUserLevelOperatorActive">
+                    <trait>released</trait>
+                    <desc>Status of Operator userlevel. Used internally in combination with the CSK_UserManagement module if available.</desc>
+                    <param desc="Status of Operator userlevel." multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnUserLevelMaintenanceActive">
+                    <trait>released</trait>
+                    <desc>Status of Maintenance userlevel. Used internally in combination with the CSK_UserManagement module if available.</desc>
+                    <param desc="Status of Maintenance userlevel." multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnUserLevelServiceActive">
+                    <trait>released</trait>
+                    <desc>Status of Service userlevel. Used internally in combination with the CSK_UserManagement module if available.</desc>
+                    <param desc="Status of Service userlevel." multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnUserLevelAdminActive">
+                    <desc>Status of Admin userlevel. Used internally in combination with the CSK_UserManagement module if available.</desc>
+                    <param desc="Status of Admin userlevel." multiplicity="1" name="status" type="bool"/>
+                </event>
+                <event name="OnNewStatusRegisteredEvent">
+                    <desc>Notify event instance is registered to receive new image to process.</desc>
+                    <param desc="Name of event." multiplicity="1" name="eventname" type="string"/>
+                </event>
+                <event name="OnNewROIType">
+                    <desc>Notify type of ROI.</desc>
+                    <param desc="Type ('Rectangle' or 'Circle')." multiplicity="1" name="type" type="string"/>
+                </event>
+                <event name="OnNewMaskingROIType">
+                    <desc>Notify type of maskingROI.</desc>
+                    <param desc="Type ('Rectangle' or 'Circle')." multiplicity="1" name="type" type="string"/>
+                </event>
+                <event name="OnNewViewerID">
+                    <desc>Notify viewerID for viewer in UI for currently selected instance.</desc>
+                    <param desc="ViewerID" multiplicity="1" name="id" type="string"/>
+                </event>
+                <function name="setParameterName">
+                    <desc>Function to set the name of the parameters if saved/loaded via the CSK_PersistentData module.</desc>
+                    <param desc="Name of the parameter." multiplicity="1" name="name" type="string"/>
+                </function>
+                <function name="sendParameters">
+                    <desc>Send parameters to CSK_PersistentData module if possible to save them.</desc>
+                </function>
+                <function name="loadParameters">
+                    <desc>Load parameters for this module from the CSK_PersistentData module if possible and use them.</desc>
+                </function>
+                <function name="setLoadOnReboot">
+                    <desc>Configure if this module should load its saved parameters at app/device boot up.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="pageCalled">
+                    <desc>Function to register "OnResume" of the module UI (only as helper function).</desc>
+                    <return desc="Empty string (only needed to simplify binding)." multiplicity="1" name="empty" type="string"/>
+                </function>
+                <function name="setInstance">
+                    <desc>Set instance to select (e.g. for further configurations on its parameters).</desc>
+                    <param desc="Single instance to select." multiplicity="1" name="instance" type="int"/>
+                </function>
+                <function name="getInstancesAmount">
+                    <desc>Get amount of created color selection instances.</desc>
+                    <return desc="Amount" multiplicity="1" name="amount" type="int"/>
+                </function>
+                <function name="setRegisterEvent">
+                    <desc>Set event to listen for incoming images to process. Will be set for currently selected instance (see "setSelectedObject").</desc>
+                    <param desc="Event name to register to ( e.g. CSK_ImagePlayer.OnNewImage)." multiplicity="1" name="event" type="string"/>
+                </function>
+                <function name="processInstanceNUM">
+                    <desc>Example of dynamically served function to process color selection. +
+NUM will be replaced by the number of instance (e.g. "processInstance1"). +
+INFO: Other modules can check via "Script.isServedAsFunction" if function of sepecific instance exists. +
+Needs then to be called via "Script.callFunction".</desc>
+                    <param alias="Image" desc="Image to process." multiplicity="1" name="image" type="object"/>
+                    <return desc="Result" multiplicity="?" name="result" type="bool"/>
+                </function>
+                <function name="setPreFilterAOIChannel">
+                    <desc>Set image channel (HSV) to be used for prefiltering of AOI.</desc>
+                    <param desc="Channel" multiplicity="1" name="channel" ref="CSK_MultiColorSelection.ImageChannel" type="enum"/>
+                </function>
+                <function name="setPreFilterAOIActive">
+                    <desc>Set if prefilter for AOI (area of interest) should be used.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setPreFilterAOIRange">
+                    <desc>Range to be used for prefiltering AOI.</desc>
+                    <param desc="Range (depends on used HSV channel) +&#10;Hue: 0 - 179 +&#10;Saturation: 0 - 255 +&#10;Value: 0 - 255." multiplicity="+" name="values" type="int"/>
+                </function>
+                <function name="setSelectedStep">
+                    <desc>Set processing step of the color selection (used for UI).</desc>
+                    <param desc="Processing step (1 of 5) +&#10;1: Pre-Filter  Area of interest +&#10;2: Pre-Filter  Area of NON interest +&#10;3: Visualize image content of interest (to check) +&#10;4 Object definition +&#10;5: Processing" multiplicity="1" name="step" type="string"/>
+                </function>
+                <function name="setPreFilterAONIActive">
+                    <desc>Set if prefilter for AONI (area of non interest) should be used.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setPreFilterAONIChannel">
+                    <desc>Set image channel (HSV) to be used for prefiltering of AONI.</desc>
+                    <param desc="Channel" multiplicity="1" name="channel" ref="CSK_MultiColorSelection.ImageChannel" type="enum"/>
+                </function>
+                <function name="setPreFilterAONIRange">
+                    <desc>Range to be used for prefiltering AONI.</desc>
+                    <param desc="Range (depends on used HSV channel) +&#10;Hue: 0 - 179 +&#10;Saturation: 0 - 255 +&#10;Value: 0 - 255" multiplicity="+" name="values" type="int"/>
+                </function>
+                <function name="setShowAOI">
+                    <desc>Set if result of active AOI (after prefiltering, Step3) should be shown in UI.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setShowImageChannel">
+                    <desc>Set image channel to show in UI (HSV).</desc>
+                    <param desc="Channel" multiplicity="1" name="channel" ref="CSK_MultiColorSelection.ImageChannel" type="enum"/>
+                </function>
+                <function name="setColorObject">
+                    <desc>Select color object.</desc>
+                    <param desc="Color object to select." multiplicity="1" name="selection" type="int"/>
+                </function>
+                <function name="setColorActive">
+                    <desc>Set if color object is active.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setObjectName">
+                    <desc>Function to specify a name for the currently selected color (e.g. 'blue pins').</desc>
+                    <param desc="Name" multiplicity="1" name="name" type="string"/>
+                </function>
+                <function name="setColorValue">
+                    <desc>Function so set the color value.</desc>
+                    <param desc="Color value ([0-179] for colors and [0-255] for grey values) +&#10;See also setColorMode()." multiplicity="1" name="value" type="int"/>
+                </function>
+                <function name="setColorMode">
+                    <desc>Function to set color mode (if color should be checked or only gray values).</desc>
+                    <param desc="Mode to use." multiplicity="1" name="mode" ref="CSK_MultiColorSelection.ColorMode" type="enum"/>
+                </function>
+                <function name="setColorTolerance">
+                    <desc>Function to set color tolerance to detect color. (Will extend the color value in both directions).</desc>
+                    <param desc="Tolerance" multiplicity="1" name="value" type="int"/>
+                </function>
+                <function name="setMinBlobSize">
+                    <desc>Function to set minimum size of blob(s) to find. +
+Value is in 'px' or 'mm²'. See also setPixelRefactor()...</desc>
+                    <param desc="Size" multiplicity="1" name="size" type="int"/>
+                </function>
+                <function name="setMaxBlobSize">
+                    <desc>Function to set maximum size of blob(s) to find. +
+Value is in 'px' or 'mm²'. See also setPixelRefactor()...</desc>
+                    <param desc="Size" multiplicity="1" name="size" type="int"/>
+                </function>
+                <function name="setPixelRefactorActive">
+                    <desc>Function to select if the px size values of found blobs should be recalculated to mm². +
+See also setPixelRefactor()</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setPixelRefactor">
+                    <desc>Function to set the factor to calculate mm² out of pixels. +
+Pixel values will be divided by this value.
+</desc>
+                    <param desc="Factor" multiplicity="1" name="value" type="float"/>
+                </function>
+                <function name="setROIActive">
+                    <desc>Function to select if color selection processing of currently selected color should only be done in a defined ROI.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setMaskingROIActive">
+                    <desc>Function to select if currently selected color should use mask(s) to ignore areas of the image for the color selection processing.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setMinGood">
+                    <desc>Function to set the minimum amount of blobs needed to be found in the image for a good measurement.</desc>
+                    <param desc="Minimum amount of blobs." multiplicity="1" name="value" type="int"/>
+                </function>
+                <function name="setMaxGood">
+                    <desc>Function to set the maximum amount of blobs allowed to be found in the image for a good measurement.</desc>
+                    <param desc="Maximum amount of blobs." multiplicity="1" name="value" type="int"/>
+                </function>
+                <function name="setPipetteEditorActive">
+                    <desc>Set status of pipette editor for selected color. +
+If TRUE, the viewer in the UI will install an editor for the pipette inside of the viewer to deifne an area within the image. +
+If FALSE it will calculate the mean value of the defined area to be used for the color value. +</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setROIEditor">
+                    <desc>Set status of ROI editor for selected color. +
+If TRUE, the viewer in the UI will install an editor for the ROI. + 
+If FALSE it will update the masks accordingly.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setMaskEditor">
+                    <desc>Set status of mask editor for selected color. +
+If TRUE, the viewer in the UI will install an editor for the mask(s). + 
+If FALSE it will update the masks accordingly.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="resetROI">
+                    <desc>Function to reset the configured ROI.</desc>
+                </function>
+                <function name="resetMask">
+                    <desc>Function to reset the configured masks to only a single mask.</desc>
+                </function>
+                <function name="setShowImage">
+                    <desc>Function to select if image should be shown on UI.</desc>
+                    <param desc="Status" multiplicity="1" name="status" type="bool"/>
+                </function>
+                <function name="setResultOutput">
+                    <desc>Function to select modus to forward results via event OnNewResult / OnNewResultNUM.</desc>
+                    <param desc="Result output mode." multiplicity="1" name="mode" ref="CSK_MultiColorSelection.ResultOutputMode" type="enum"/>
+                </function>
+                <function name="addInstance">
+                    <desc>Function to add an additional instance.</desc>
+                </function>
+                <function name="resetInstances">
+                    <desc>Function to reset instances to one single instance. +
+IMPORTANT: As instances start their own threads, the module needs to be restarted if new instances are needed... (see AppEngine docu for "Script.startScript").</desc>
+                </function>
+                <function name="addMaskingROI">
+                    <desc>Function to add a mask for currently selected color.</desc>
+                </function>
+                <function name="setROIType">
+                    <desc>Function to set the type of ROI.</desc>
+                    <param desc="Type" multiplicity="1" name="roiType" ref="CSK_MultiColorSelection.ROI_Type" type="enum"/>
+                </function>
+                <function name="setMaskingROIType">
+                    <desc>Function to set type of mask(s).</desc>
+                    <param desc="Type" multiplicity="1" name="roiType" ref="CSK_MultiColorSelection.ROI_Type" type="enum"/>
+                </function>
+            </serves>
+        </crown>
+        <meta key="author">SICK AG</meta>
+        <meta key="version">2.0.0</meta>
+        <meta key="priority">low</meta>
+        <meta key="copy-protected">false</meta>
+        <meta key="read-protected">false</meta>
+        <meta key="crown2-flow-engine">false</meta>
+        <meta key="LuaLoadAllEngineAPI">false</meta>
+        <entry default="CSK_Module_MultiColorSelection.lua" path="scripts"/>
+    </application>
+</manifest>
