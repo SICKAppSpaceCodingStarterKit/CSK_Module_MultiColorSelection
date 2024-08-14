@@ -44,19 +44,26 @@ _G.logHandle:applyConfig()
 local multiColorSelection_Model = require('ImageProcessing/MultiColorSelection/MultiColorSelection_Model')
 
 local multiColorSelection_Instances = {} -- Handle all instances
-table.insert(multiColorSelection_Instances, multiColorSelection_Model.create(1))
 
 -- Load script to communicate with the MultiColorSelection_Model UI
 -- Check / edit this script to see/edit functions which communicate with the UI
 local multiColorSelectionController = require('ImageProcessing/MultiColorSelection/MultiColorSelection_Controller')
-multiColorSelectionController.setMultiColorSelection_Instances_Handle(multiColorSelection_Instances)
+
+if _G.availableAPIs.default and _G.availableAPIs.specific then
+  local setInstanceHandle = require('ImageProcessing/MultiColorSelection/FlowConfig/MultiColorSelection_FlowConfig')
+  table.insert(multiColorSelection_Instances, multiColorSelection_Model.create(1))
+  multiColorSelectionController.setMultiColorSelection_Instances_Handle(multiColorSelection_Instances)
+  setInstanceHandle(multiColorSelection_Instances)
+else
+  _G.logger:warning("CSK_MultiColorSelection: Relevant CROWN(s) not available on device. Module is not supported...")
+end
 
 --**************************************************************************
 --**********************End Global Scope ***********************************
 --**************************************************************************
 --**********************Start Function Scope *******************************
 --**************************************************************************
-
+--[[
 --- Function to show how this module could be used
 local function startProcessing()
 
@@ -74,9 +81,9 @@ local function startProcessing()
     -- Option B --> trigger processing via function call
   --local result = CSK_MultiColorSelection.processSomething(data)
 end
-
 -- Call processing function after persistent data was loaded
-Script.register("CSK_MultiColorSelection.OnDataLoadedOnReboot", startProcessing)
+--Script.register("CSK_MultiColorSelection.OnDataLoadedOnReboot", startProcessing)
+]]
 
 --- Function to react on startup event of the app
 local function main()
@@ -96,8 +103,10 @@ local function main()
   ----------------------------------------------------------------------------------------
 
   --startProcessing() --> see above
+  if _G.availableAPIs.default and _G.availableAPIs.specific then
+    CSK_MultiColorSelection.setInstance(1)
+  end
   CSK_MultiColorSelection.pageCalled() -- Update UI
-
 end
 Script.register("Engine.OnStarted", main)
 
