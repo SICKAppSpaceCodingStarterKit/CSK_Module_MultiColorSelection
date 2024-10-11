@@ -320,21 +320,22 @@
                                                             </layout-column>
                                                             <layout-column id="ColumnLayout4"
                                                                 style="align-items: stretch">
-                                                                <davinci-text-field id="TF_RegisteredEvent" type="text"
-                                                                    title="Process images receiving from this event, like 'CSK_ImagePlayer.OnNewImage'">
-                                                                    <crown-edpws-binding property="value"
-                                                                        name="CSK_MultiColorSelection/OnNewStatusRegisteredEvent"
-                                                                        update-on-resume>
-                                                                    </crown-edpws-binding>
-                                                                    <crown-binding event="change"
-                                                                        name="CSK_MultiColorSelection/setRegisterEvent"
-                                                                        path="param/args/event" auto-commit>
-                                                                    </crown-binding>
-                                                                    <crown-edpws-binding property="disabled"
-                                                                        name="CSK_MultiColorSelection/OnNewStatusFlowConfigPriority"
-                                                                        update-on-resume>
-                                                                    </crown-edpws-binding>
-                                                                </davinci-text-field>
+												<davinci-text-field id="TF_RegisteredEvent" type="text"
+													title="Process images receiving from this event, like 'CSK_ImagePlayer.OnNewImage'"
+													label="e.g. CSK_ImagePlayer.OnNewImage">
+												<crown-edpws-binding property="value"
+													name="CSK_MultiColorSelection/OnNewStatusRegisteredEvent"
+													update-on-resume>
+												</crown-edpws-binding>
+												<crown-binding event="change"
+													name="CSK_MultiColorSelection/setRegisterEvent"
+													path="param/args/event" auto-commit>
+												</crown-binding>
+												<crown-edpws-binding property="disabled"
+													name="CSK_MultiColorSelection/OnNewStatusFlowConfigPriority"
+													update-on-resume>
+												</crown-edpws-binding>
+												</davinci-text-field>
                                                             </layout-column>
                                                         </layout-row>
                                                         <davinci-value-display id="VD_ProcessingStep"

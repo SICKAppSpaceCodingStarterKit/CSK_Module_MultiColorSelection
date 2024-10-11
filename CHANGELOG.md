@@ -20,6 +20,9 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfix
 - Never deregistered from events
+- Error if module is not active but 'getInstancesAmount' was called
+- processInstanceNUM did not work after deregistering from event to process images
+- Reset of masks switched between circle and rectangle
 
 ## Release 2.0.0
 

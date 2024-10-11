@@ -451,26 +451,34 @@ local function handleOnNewProcessing(image, timestamp)
     end
   end
 end
-Script.serveFunction("CSK_MultiColorSelection.processInstance"..multiColorSelectionInstanceNumberString, handleOnNewProcessing, 'object:1:Image', 'bool:?')
+Script.serveFunction("CSK_MultiColorSelection.processInstance"..multiColorSelectionInstanceNumberString, handleOnNewProcessing, 'object:1:Image,int:?', 'bool:?')
+
+--- Function only used to forward the content from events to the served function.
+--- This is only needed, as deregistering from the event would internally release the served function and would make it uncallable from external.
+---@param image Image Image to process
+---@param timestamp int? Timestamp
+local function tempHandleOnNewProcessing(image, timestamp)
+  handleOnNewProcessing(image, timestamp)
+end
 
 --- Function to set event to register
 ---@param event string Name of event
 local function setRegisterEvent(event)
   _G.logger:fine(nameOfModule .. ": Register instance " .. multiColorSelectionInstanceNumberString .. " on event " .. event)
   if processingParams.registeredEvent and processingParams.registeredEvent ~= '' then
-    Script.deregister(processingParams.registeredEvent, handleOnNewProcessing)
+    Script.deregister(processingParams.registeredEvent, tempHandleOnNewProcessing)
     imageQueue:clear()
   end
   processingParams.registeredEvent = event
-  Script.register(event, handleOnNewProcessing)
-  imageQueue:setFunction(handleOnNewProcessing)
+  Script.register(event, tempHandleOnNewProcessing)
+  imageQueue:setFunction(tempHandleOnNewProcessing)
   gotImageSize = false
 end
 
 --- Function to deregister from event
 local function deregisterFromEvent()
   _G.logger:fine(nameOfModule .. ": Deregister instance " .. multiColorSelectionInstanceNumberString .. " from event.")
-  Script.deregister(processingParams.registeredEvent, handleOnNewProcessing)
+  Script.deregister(processingParams.registeredEvent, tempHandleOnNewProcessing)
   processingParams.registeredEvent = ''
   imageQueue:clear()
 end
@@ -736,7 +744,7 @@ local function handleOnNewProcessingParameter(multiColorSelectionNo, parameter, 
       processingParams.colorObjects[processingParams.selectedColorObject]["maskingROIs"][1]["mask"] = roi
       Shape.Composite.addShape(processingParams.colorObjects[processingParams.selectedColorObject]["maskingROIComposite"], roi)
 
-      processingParams.colorObjects[processingParams.selectedColorObject]["maskingROIs"][1]["type_maskingROI"] = 'Rectangle'
+      processingParams.colorObjects[processingParams.selectedColorObject]["type_maskingROI"] = 'Rectangle'
 
       Script.notifyEvent("MultiColorSelection_OnNewValueUpdate" .. multiColorSelectionInstanceNumberString, multiColorSelectionInstanceNumber, 'type_maskingROI', 'Rectangle', processingParams.selectedColorObject)
       Script.notifyEvent("MultiColorSelection_OnNewValueToForward" .. multiColorSelectionInstanceNumberString, 'MultiColorSelection_OnNewMaskingROIType', 'Rectangle')
@@ -766,7 +774,7 @@ local function handleOnNewProcessingParameter(multiColorSelectionNo, parameter, 
   end
 
   if processingParams['activeInUI'] and latestImage and imageQueue:getSize() == 0 and gotImageSize == true then -- parameter ~= 'imageSize' then
-    handleOnNewProcessing(latestImage)
+    tempHandleOnNewProcessing(latestImage)
   end
 
 end

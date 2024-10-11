@@ -222,7 +222,7 @@ end
 --- Function to send all relevant values to UI on resume
 local function handleOnExpiredTmrMultiColorSelection()
 
-  Script.notifyEvent("MultiColorSelection_OnNewStatusModuleVersion", multiColorSelection_Model.version)
+  Script.notifyEvent("MultiColorSelection_OnNewStatusModuleVersion", 'v' .. multiColorSelection_Model.version)
   Script.notifyEvent("MultiColorSelection_OnNewStatusCSKStyle", multiColorSelection_Model.styleForUI)
   Script.notifyEvent("MultiColorSelection_OnNewStatusModuleIsActive", _G.availableAPIs.default and _G.availableAPIs.specific)
 
@@ -334,8 +334,12 @@ local function setInstance(instance)
 end
 Script.serveFunction("CSK_MultiColorSelection.setInstance", setInstance)
 
-local function getInstancesAmount ()
-  return #multiColorSelection_Instances
+local function getInstancesAmount()
+  if multiColorSelection_Instances then
+    return #multiColorSelection_Instances
+  else
+    return 0
+  end
 end
 Script.serveFunction("CSK_MultiColorSelection.getInstancesAmount", getInstancesAmount)
 
