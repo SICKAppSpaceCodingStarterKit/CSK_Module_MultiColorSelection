@@ -13,11 +13,21 @@ local nameOfModule = 'CSK_MultiColorSelection'
 local multiColorSelection = {}
 multiColorSelection.__index = multiColorSelection
 
+multiColorSelection.styleForUI = 'None' -- Optional parameter to set UI style
+multiColorSelection.version = Engine.getCurrentAppVersion() -- Version of module
+
 --**************************************************************************
 --********************** End Global Scope **********************************
 --**************************************************************************
 --**********************Start Function Scope *******************************
 --**************************************************************************
+
+--- Function to react on UI style change
+local function handleOnStyleChanged(theme)
+  multiColorSelection.styleForUI = theme
+  Script.notifyEvent("MultiColorSelection_OnNewStatusCSKStyle", multiColorSelection.styleForUI)
+end
+Script.register('CSK_PersistentData.OnNewStatusCSKStyle', handleOnStyleChanged)
 
 --- Function to create new instance
 ---@param multiColorSelectionInstanceNo int Number of instance
@@ -47,6 +57,7 @@ function multiColorSelection.create(multiColorSelectionInstanceNo)
 
   -- Parameters to be saved permanently if wanted
   self.parameters = {}
+  self.parameters.flowConfigPriority = CSK_FlowConfig ~= nil or false -- Status if FlowConfig should have priority for FlowConfig relevant configurations
   self.parameters.registeredEvent = '' -- Event to register to get images to process
   self.parameters.processingFile = 'CSK_MultiColorSelection_Processing' -- Script to use for processing in thread
 

@@ -1,7 +1,7 @@
 # CSK_Module_MultiColorSelection
 
 Module to setup a single or multiple color selection instances.  
-![](https://github.com/SICKAppSpaceCodingStarterKit/CSK_Module_MultiColorSelection/blob/main/docu/media/UI_Screenshot.png)
+![](./docu/media/UI_Screenshot.png)
 
 ## How to Run
 
@@ -11,11 +11,15 @@ For further information check out the [documentation](https://raw.githack.com/SI
 
 ## Information
 
-Tested on:
+Tested on  
 
-1. SIM1012        - Firmware 2.2.0
-2. SIM2500        - Firmware 1.3.0
-3. SICK AppEngine - Firmware 1.3.2
+|Device|Firmware version|Module version|
+|--|--|--|
+|SIM1012|V2.4.2|v3.0.0|
+|SIM1012|V2.2.0|<v3.0.0|
+|SIM2500|V1.3.0|<v3.0.0|
+|SICK AppEngine|V1.7.0|v3.0.0|
+|SICK AppEngine|V1.3.2|<v3.0.0|
 
 This module is part of the SICK AppSpace Coding Starter Kit developing approach.  
 It is programmed in an object oriented way. Some of these modules use kind of "classes" in Lua to make it possible to reuse code / classes in other projects.  

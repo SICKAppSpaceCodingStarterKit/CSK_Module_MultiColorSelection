@@ -1,10 +1,3 @@
-.myCustomFrame_CSK_Module_MultiColorSelection {
-  border-style: solid;
-  border-width: 1px;
-  border-color: grey;
-  margin: 6px;
-}
-
 .myCustomSlider_CSK_Module_MultiColorSelection {
   width: 98%;
   min-width: none;
@@ -12,10 +5,115 @@
 }
 
 .myViewer_CSK_Module_MultiColorSelection > div > div {
-  max-height: 800px;
-  min-height: 800px;
+  max-height: 600px;
+  min-height: 600px;
 }
 
 .myCustomPlaceholder5pxHeight_CSK_Module_MultiColorSelection {
   min-height: 5px;
+}
+
+.myCustomSpacerVert10_CSK_Module_MultiColorSelection {
+  min-height: 10px;
+}
+
+.myCustomSpacerVert20_CSK_Module_MultiColorSelection {
+  min-height: 20px;
+}
+
+.myCustomFrameLabel_CSK_Module_MultiColorSelection {
+  background: white;
+  position:relative;
+  top: calc(-1.2rem);
+  left: calc(1rem);
+  font-size: medium;
+}
+
+.myCustomMargin99Percent_CSK_Module_MultiColorSelection {
+  margin: calc(1rem);
+  margin-top: 20px;
+}
+
+.myCustomMarginFirstRow_CSK_Module_MultiColorSelection {
+  margin-top: -49px;
+}
+
+.myCustomMarginLeft30PX_CSK_Module_MultiColorSelection {
+  margin-left:30px;
+}
+
+.myCustomMarginLeft-30PX_CSK_Module_MultiColorSelection {
+  margin-left:-30px;
+}
+
+.myCustomPersistentDataMargin_CSK_Module_MultiColorSelection {
+  margin-top: -53px;
+  margin-left: 130px;
+}
+
+.myCustomPersistentDataMarginBack_CSK_Module_MultiColorSelection {
+  margin-left: -130px;
+}
+
+.myCustomBorderBottom_CSK_Module_MultiColorSelection {
+  border-bottom: 1px solid lightgray;
+  margin-inline: calc(1rem);
+}
+
+.myCustomMarginInline1Rem_CSK_Module_MultiColorSelection {
+  margin-inline: calc(0.5rem);
+}
+
+.myCustomBorderLeft_CSK_Module_MultiColorSelection {
+  border-left: 1px solid lightgray;
+}
+
+.myCustomTabFrame_CSK_Module_MultiColorSelection {
+  width: 98%;
+  align-self: center;  
+}
+
+.myCustomLabel_CSK_Module_MultiColorSelection {
+  font-size:30px;
+  color: grey;
+  margin-top: 10px;
+}
+
+.myCustomFrameNoColor_CSK_Module_MultiColorSelection {
+  margin: 6px;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 0px;
+  border-color: 007CC1;
+  background-color: #FFFFFF;
+}
+
+.myCustomFrame_CSK_Module_MultiColorSelection {
+  margin: 6px;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #007CC1;
+  background-color: white;
+}
+
+.myCustomFrameNoColor_CSK_Module_MultiColorSelection {
+  margin: 6px;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 0px;
+  border-color: 007CC1;
+  background-color: white;
+}
+
+.myCustomMarginTop7PX_CSK_Module_MultiColorSelection {
+  margin-top: 7px;
+}
+
+.myCustomBackground_CSK_Module_MultiColorSelection {
+}
+
+.myCustomButton_CSK_Module_MultiColorSelection {
+  border-radius: 30px;
+  padding-right: 0px;
 }

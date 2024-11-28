@@ -37,12 +37,17 @@ end
 Script.serveFunction("CSK_MultiColorSelection.processInstanceNUM", emptyFunction)
 
 Script.serveEvent("CSK_MultiColorSelection.OnNewResultNUM", "MultiColorSelection_OnNewResultNUM")
+Script.serveEvent("CSK_MultiColorSelection.OnNewStringResultNUM", "MultiColorSelection_OnNewStringResultNUM")
 Script.serveEvent("CSK_MultiColorSelection.OnNewValueToForwardNUM", "MultiColorSelection_OnNewValueToForwardNUM")
 Script.serveEvent("CSK_MultiColorSelection.OnNewValueUpdateNUM", "MultiColorSelection_OnNewValueUpdateNUM")
 ----------------------------------------------------------------
 
 -- Real events
 --------------------------------------------------
+Script.serveEvent('CSK_MultiColorSelection.OnNewStatusModuleVersion', 'MultiColorSelection_OnNewStatusModuleVersion')
+Script.serveEvent('CSK_MultiColorSelection.OnNewStatusCSKStyle', 'MultiColorSelection_OnNewStatusCSKStyle')
+Script.serveEvent('CSK_MultiColorSelection.OnNewStatusModuleIsActive', 'MultiColorSelection_OnNewStatusModuleIsActive')
+
 Script.serveEvent("CSK_MultiColorSelection.OnNewInstanceList", "MultiColorSelection_OnNewInstanceList")
 Script.serveEvent("CSK_MultiColorSelection.OnNewSelectedInstance", "MultiColorSelection_OnNewSelectedInstance")
 
@@ -108,6 +113,7 @@ Script.serveEvent("CSK_MultiColorSelection.OnUserLevelMaintenanceActive", "Multi
 Script.serveEvent("CSK_MultiColorSelection.OnUserLevelServiceActive", "MultiColorSelection_OnUserLevelServiceActive")
 Script.serveEvent("CSK_MultiColorSelection.OnUserLevelAdminActive", "MultiColorSelection_OnUserLevelAdminActive")
 
+Script.serveEvent('CSK_MultiColorSelection.OnNewStatusFlowConfigPriority', 'MultiColorSelection_OnNewStatusFlowConfigPriority')
 Script.serveEvent("CSK_MultiColorSelection.OnNewParameterName", "MultiColorSelection_OnNewParameterName")
 Script.serveEvent("CSK_MultiColorSelection.OnNewStatusLoadParameterOnReboot", "MultiColorSelection_OnNewStatusLoadParameterOnReboot")
 Script.serveEvent("CSK_MultiColorSelection.OnPersistentDataModuleAvailable", "MultiColorSelection_OnPersistentDataModuleAvailable")
@@ -216,72 +222,82 @@ end
 --- Function to send all relevant values to UI on resume
 local function handleOnExpiredTmrMultiColorSelection()
 
-  updateUserLevel()
+  Script.notifyEvent("MultiColorSelection_OnNewStatusModuleVersion", 'v' .. multiColorSelection_Model.version)
+  Script.notifyEvent("MultiColorSelection_OnNewStatusCSKStyle", multiColorSelection_Model.styleForUI)
+  Script.notifyEvent("MultiColorSelection_OnNewStatusModuleIsActive", _G.availableAPIs.default and _G.availableAPIs.specific)
 
-  Script.notifyEvent("MultiColorSelection_OnNewInstanceList", helperFuncs.createStringListBySize(#multiColorSelection_Instances))
-  Script.notifyEvent('MultiColorSelection_OnNewSelectedInstance', selectedInstance)
+  if _G.availableAPIs.default and _G.availableAPIs.specific then
 
-  Script.notifyEvent('MultiColorSelection_OnNewStatusRegisteredEvent', multiColorSelection_Instances[selectedInstance].parameters.registeredEvent)
+    updateUserLevel()
 
-  Script.notifyEvent('MultiColorSelection_OnNewViewerID', 'multiColorSelectionViewer' .. tostring(selectedInstance))
-  Script.notifyEvent('MultiColorSelection_OnNewStatusShowImage', multiColorSelection_Instances[selectedInstance].parameters.showImage)
+    Script.notifyEvent("MultiColorSelection_OnNewInstanceList", helperFuncs.createStringListBySize(#multiColorSelection_Instances))
+    Script.notifyEvent('MultiColorSelection_OnNewSelectedInstance', selectedInstance)
 
-  Script.notifyEvent("MultiColorSelection_OnNewSelectedStep", selectedStep)
+    Script.notifyEvent('MultiColorSelection_OnNewStatusRegisteredEvent', multiColorSelection_Instances[selectedInstance].parameters.registeredEvent)
 
-  Script.notifyEvent("MultiColorSelection_OnPreFilterAOIActive", multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIActive)
-  Script.notifyEvent("MultiColorSelection_OnNewPreFilterAOIChannel", multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIChannel)
-  Script.notifyEvent("MultiColorSelection_OnPreFilterAOIValues", {multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIMin, multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIMax})
+    Script.notifyEvent('MultiColorSelection_OnNewViewerID', 'multiColorSelectionViewer' .. tostring(selectedInstance))
+    Script.notifyEvent('MultiColorSelection_OnNewStatusShowImage', multiColorSelection_Instances[selectedInstance].parameters.showImage)
 
-  Script.notifyEvent("MultiColorSelection_OnPreFilterAONIActive", multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIActive)
-  Script.notifyEvent("MultiColorSelection_OnNewPreFilterAONIChannel", multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIChannel)
-  Script.notifyEvent("MultiColorSelection_OnPreFilterAONIValues", {multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIMin, multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIMax})
+    Script.notifyEvent("MultiColorSelection_OnNewSelectedStep", selectedStep)
 
-  Script.notifyEvent("MultiColorSelection_OnShowAOI", multiColorSelection_Instances[selectedInstance].parameters.showAOI)
-  Script.notifyEvent("MultiColorSelection_OnNewShowImageChannel", multiColorSelection_Instances[selectedInstance].parameters.showImageChannel)
+    Script.notifyEvent("MultiColorSelection_OnPreFilterAOIActive", multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIActive)
+    Script.notifyEvent("MultiColorSelection_OnNewPreFilterAOIChannel", multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIChannel)
+    Script.notifyEvent("MultiColorSelection_OnPreFilterAOIValues", {multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIMin, multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIMax})
 
-  Script.notifyEvent("MultiColorSelection_OnNewColorObjectSelection", selectedColorObject)
-  Script.notifyEvent("MultiColorSelection_OnNewStatusColorActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorActive)
-  Script.notifyEvent("MultiColorSelection_OnNewObjectName", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].objectName)
-  Script.notifyEvent("MultiColorSelection_OnNewColorValue", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorValue)
-  Script.notifyEvent("MultiColorSelection_OnNewColorMode", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorMode)
-  Script.notifyEvent("MultiColorSelection_OnNewValueTolerance", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorTolerance)
-  Script.notifyEvent("MultiColorSelection_OnNewMinBlobSize", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].minBlobSize)
-  Script.notifyEvent("MultiColorSelection_OnNewMaxBlobSize", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maxBlobSize)
-  Script.notifyEvent("MultiColorSelection_OnNewStatusPixelRefactorActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactorActive)
-  Script.notifyEvent("MultiColorSelection_OnNewPixelRefactorUnit", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactorUnit)
-  Script.notifyEvent("MultiColorSelection_OnNewPixelRefactor", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactor)
-  Script.notifyEvent("MultiColorSelection_OnNewStatusROIActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].roiActive)
-  Script.notifyEvent("MultiColorSelection_OnNewStatusMaskActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maskingROIActive)
+    Script.notifyEvent("MultiColorSelection_OnPreFilterAONIActive", multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIActive)
+    Script.notifyEvent("MultiColorSelection_OnNewPreFilterAONIChannel", multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIChannel)
+    Script.notifyEvent("MultiColorSelection_OnPreFilterAONIValues", {multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIMin, multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIMax})
 
-  Script.notifyEvent("MultiColorSelection_OnNewROIType", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].type_ROI)
-  Script.notifyEvent('MultiColorSelection_OnNewMaskingROIType', multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].type_maskingROI)
+    Script.notifyEvent("MultiColorSelection_OnShowAOI", multiColorSelection_Instances[selectedInstance].parameters.showAOI)
+    Script.notifyEvent("MultiColorSelection_OnNewShowImageChannel", multiColorSelection_Instances[selectedInstance].parameters.showImageChannel)
 
-  Script.notifyEvent("MultiColorSelection_OnNewMinGood", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].minGood)
-  Script.notifyEvent("MultiColorSelection_OnNewMaxGood", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maxGood)
+    Script.notifyEvent("MultiColorSelection_OnNewColorObjectSelection", selectedColorObject)
+    Script.notifyEvent("MultiColorSelection_OnNewStatusColorActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorActive)
+    Script.notifyEvent("MultiColorSelection_OnNewObjectName", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].objectName)
+    Script.notifyEvent("MultiColorSelection_OnNewColorValue", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorValue)
+    Script.notifyEvent("MultiColorSelection_OnNewColorMode", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorMode)
+    Script.notifyEvent("MultiColorSelection_OnNewValueTolerance", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorTolerance)
+    Script.notifyEvent("MultiColorSelection_OnNewMinBlobSize", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].minBlobSize)
+    Script.notifyEvent("MultiColorSelection_OnNewMaxBlobSize", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maxBlobSize)
+    Script.notifyEvent("MultiColorSelection_OnNewStatusPixelRefactorActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactorActive)
+    Script.notifyEvent("MultiColorSelection_OnNewPixelRefactorUnit", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactorUnit)
+    Script.notifyEvent("MultiColorSelection_OnNewPixelRefactor", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactor)
+    Script.notifyEvent("MultiColorSelection_OnNewStatusROIActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].roiActive)
+    Script.notifyEvent("MultiColorSelection_OnNewStatusMaskActive", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maskingROIActive)
 
-  Script.notifyEvent("MultiColorSelection_OnROIEditorActive", roiEditorActive)
-  Script.notifyEvent("MultiColorSelection_OnMaskEditorActive", maskingROIEditorActive)
-  Script.notifyEvent("MultiColorSelection_OnPipetteActive", pipetteActive)
+    Script.notifyEvent("MultiColorSelection_OnNewROIType", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].type_ROI)
+    Script.notifyEvent('MultiColorSelection_OnNewMaskingROIType', multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].type_maskingROI)
 
-  Script.notifyEvent("MultiColorSelection_OnNewSizeSmallestBlob", '-')
-  Script.notifyEvent("MultiColorSelection_OnNewSizeBiggestBlob", '-')
-  Script.notifyEvent("MultiColorSelection_OnNewFoundBlobs", '-')
+    Script.notifyEvent("MultiColorSelection_OnNewMinGood", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].minGood)
+    Script.notifyEvent("MultiColorSelection_OnNewMaxGood", multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maxGood)
 
-  Script.notifyEvent("MultiColorSelection_OnNewImageQueue", '-')
-  Script.notifyEvent("MultiColorSelection_OnNewProcessingTime", '-')
+    Script.notifyEvent("MultiColorSelection_OnROIEditorActive", roiEditorActive)
+    Script.notifyEvent("MultiColorSelection_OnMaskEditorActive", maskingROIEditorActive)
+    Script.notifyEvent("MultiColorSelection_OnPipetteActive", pipetteActive)
 
-  Script.notifyEvent("MultiColorSelection_OnNewResultOutput", multiColorSelection_Instances[selectedInstance].parameters.resultOutput)
+    Script.notifyEvent("MultiColorSelection_OnNewSizeSmallestBlob", '-')
+    Script.notifyEvent("MultiColorSelection_OnNewSizeBiggestBlob", '-')
+    Script.notifyEvent("MultiColorSelection_OnNewFoundBlobs", '-')
 
-  Script.notifyEvent('MultiColorSelection_OnNewParameterName', multiColorSelection_Instances[selectedInstance].parametersName)
-  Script.notifyEvent("MultiColorSelection_OnNewStatusLoadParameterOnReboot", multiColorSelection_Instances[selectedInstance].parameterLoadOnReboot)
-  Script.notifyEvent("MultiColorSelection_OnPersistentDataModuleAvailable", multiColorSelection_Instances[selectedInstance].persistentModuleAvailable)
+    Script.notifyEvent("MultiColorSelection_OnNewImageQueue", '-')
+    Script.notifyEvent("MultiColorSelection_OnNewProcessingTime", '-')
+
+    Script.notifyEvent("MultiColorSelection_OnNewResultOutput", multiColorSelection_Instances[selectedInstance].parameters.resultOutput)
+
+    Script.notifyEvent("MultiColorSelection_OnNewStatusFlowConfigPriority", multiColorSelection_Instances[selectedInstance].parameters.flowConfigPriority)
+    Script.notifyEvent('MultiColorSelection_OnNewParameterName', multiColorSelection_Instances[selectedInstance].parametersName)
+    Script.notifyEvent("MultiColorSelection_OnNewStatusLoadParameterOnReboot", multiColorSelection_Instances[selectedInstance].parameterLoadOnReboot)
+    Script.notifyEvent("MultiColorSelection_OnPersistentDataModuleAvailable", multiColorSelection_Instances[selectedInstance].persistentModuleAvailable)
+  end
 end
 Timer.register(tmrMultiColorSelection, "OnExpired", handleOnExpiredTmrMultiColorSelection)
 
 -- ********************* UI Setting / Submit Functions Start ********************
 
 local function pageCalled()
-  updateUserLevel() -- try to hide user specific content asap
+  if _G.availableAPIs.default and _G.availableAPIs.specific then
+    updateUserLevel() -- try to hide user specific content asap
+  end
   tmrMultiColorSelection:start()
   return ''
 end
@@ -289,7 +305,7 @@ Script.serveFunction("CSK_MultiColorSelection.pageCalled", pageCalled)
 
 local function setSelectedStep(step)
   selectedStep = step
-  _G.logger:info(nameOfModule .. ": New step selected = " .. tostring(step))
+  _G.logger:fine(nameOfModule .. ": New step selected = " .. tostring(step))
   Script.notifyEvent("MultiColorSelection_OnNewSelectedStep", selectedStep)
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'selectedStep', selectedStep)
 end
@@ -297,29 +313,38 @@ Script.serveFunction("CSK_MultiColorSelection.setSelectedStep", setSelectedStep)
 
 local function setInstance(instance)
 
-  roiEditorActive = false
-  maskingROIEditorActive = false
-  pipetteActive = false
-  Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'chancelEditors', true)
+  if #multiColorSelection_Instances >= instance then
 
-  selectedInstance = instance
-  selectedColorObject = 1
-  setSelectedStep('5')
-  _G.logger:info(nameOfModule .. ": New selected instance = " .. tostring(selectedInstance))
-  multiColorSelection_Instances[selectedInstance].activeInUI = true
-  Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'activeInUI', true)
-  Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'selectedColorObject', selectedColorObject)
-  handleOnExpiredTmrMultiColorSelection()
+    roiEditorActive = false
+    maskingROIEditorActive = false
+    pipetteActive = false
+    Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'chancelEditors', true)
+
+    selectedInstance = instance
+    selectedColorObject = 1
+    setSelectedStep('5')
+    _G.logger:fine(nameOfModule .. ": New selected instance = " .. tostring(selectedInstance))
+    multiColorSelection_Instances[selectedInstance].activeInUI = true
+    Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'activeInUI', true)
+    Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'selectedColorObject', selectedColorObject)
+    handleOnExpiredTmrMultiColorSelection()
+  else
+    _G.logger:warning(nameOfModule .. ": Selected instance does not exist.")
+  end
 end
 Script.serveFunction("CSK_MultiColorSelection.setInstance", setInstance)
 
-local function getInstancesAmount ()
-  return #multiColorSelection_Instances
+local function getInstancesAmount()
+  if multiColorSelection_Instances then
+    return #multiColorSelection_Instances
+  else
+    return 0
+  end
 end
 Script.serveFunction("CSK_MultiColorSelection.getInstancesAmount", getInstancesAmount)
 
 local function addInstance()
-  _G.logger:info(nameOfModule .. ": Add instance")
+  _G.logger:fine(nameOfModule .. ": Add instance")
   table.insert(multiColorSelection_Instances, multiColorSelection_Model.create(#multiColorSelection_Instances+1))
   Script.deregister("CSK_MultiColorSelection.OnNewValueToForward" .. tostring(#multiColorSelection_Instances) , handleOnNewValueToForward)
   Script.register("CSK_MultiColorSelection.OnNewValueToForward" .. tostring(#multiColorSelection_Instances) , handleOnNewValueToForward)
@@ -345,28 +370,28 @@ end
 Script.serveFunction('CSK_MultiColorSelection.resetInstances', resetInstances)
 
 local function setShowImage(status)
-  _G.logger:info(nameOfModule .. ": Set show image: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set show image: " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.showImage = status
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'showImage', status)
 end
 Script.serveFunction("CSK_MultiColorSelection.setShowImage", setShowImage)
 
 local function setPreFilterAOIActive(status)
-  _G.logger:info(nameOfModule .. ": Set prefilter AOI active: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set prefilter AOI active: " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIActive = status
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'preFilterAOIActive', status)
 end
 Script.serveFunction("CSK_MultiColorSelection.setPreFilterAOIActive", setPreFilterAOIActive)
 
 local function setPreFilterAOIChannel(channel)
-  _G.logger:info(nameOfModule .. ": Set prefilter AOI channel: " .. tostring(channel))
+  _G.logger:fine(nameOfModule .. ": Set prefilter AOI channel: " .. tostring(channel))
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIChannel = channel
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'preFilterAOIChannel', channel)
 end
 Script.serveFunction("CSK_MultiColorSelection.setPreFilterAOIChannel", setPreFilterAOIChannel)
 
 local function setPreFilterAOIRange(values)
-  _G.logger:info(nameOfModule .. ": Set prefilter AOI values: " .. tostring(values[1]) .. " - " .. tostring(values[2]))
+  _G.logger:fine(nameOfModule .. ": Set prefilter AOI values: " .. tostring(values[1]) .. " - " .. tostring(values[2]))
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIMin = values[1]
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAOIMax = values[2]
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'preFilterAOIMin', values[1])
@@ -375,21 +400,21 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setPreFilterAOIRange", setPreFilterAOIRange)
 
 local function setPreFilterAONIActive(status)
-  _G.logger:info(nameOfModule .. ": Set prefilter AONI active: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set prefilter AONI active: " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIActive = status
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'preFilterAONIActive', status)
 end
 Script.serveFunction("CSK_MultiColorSelection.setPreFilterAONIActive", setPreFilterAONIActive)
 
 local function setPreFilterAONIChannel(channel)
-  _G.logger:info(nameOfModule .. ": Set prefilter AONI channel: " .. tostring(channel))
+  _G.logger:fine(nameOfModule .. ": Set prefilter AONI channel: " .. tostring(channel))
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIChannel = channel
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'preFilterAONIChannel', channel)
 end
 Script.serveFunction("CSK_MultiColorSelection.setPreFilterAONIChannel", setPreFilterAONIChannel)
 
 local function setPreFilterAONIRange(values)
-  _G.logger:info(nameOfModule .. ": Set prefilter AONI values: " .. tostring(values[1]) .. " - " .. tostring(values[2]))
+  _G.logger:fine(nameOfModule .. ": Set prefilter AONI values: " .. tostring(values[1]) .. " - " .. tostring(values[2]))
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIMin = values[1]
   multiColorSelection_Instances[selectedInstance].parameters.preFilterAONIMax = values[2]
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'preFilterAONIMin', values[1])
@@ -398,21 +423,21 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setPreFilterAONIRange", setPreFilterAONIRange)
 
 local function setShowImageChannel(channel)
-  _G.logger:info(nameOfModule .. ": Set image channel to show: " .. tostring(channel))
+  _G.logger:fine(nameOfModule .. ": Set image channel to show: " .. tostring(channel))
   multiColorSelection_Instances[selectedInstance].parameters.showImageChannel = channel
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'showImageChannel', channel)
 end
 Script.serveFunction("CSK_MultiColorSelection.setShowImageChannel", setShowImageChannel)
 
 local function setShowAOI(status)
-  _G.logger:info(nameOfModule .. ": Set show AOI: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set show AOI: " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.showAOI = status
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'showAOI', status)
 end
 Script.serveFunction("CSK_MultiColorSelection.setShowAOI", setShowAOI)
 
 local function setColorObject(selection)
-  _G.logger:info(nameOfModule .. ": Set color object: " .. tostring(selection))
+  _G.logger:fine(nameOfModule .. ": Set color object: " .. tostring(selection))
   selectedColorObject = selection
 
   roiEditorActive = false
@@ -427,8 +452,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setColorObject", setColorObject)
 
 local function setColorActive(status)
-  _G.logger:info(nameOfModule .. ": Set color active: " .. tostring(status))
-  _G.logger:info(nameOfModule .. ": Set 'colorActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set 'colorActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorActive = status
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'colorActive', status, selectedColorObject)
@@ -437,7 +461,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setColorActive", setColorActive)
 
 local function setObjectName(name)
-  _G.logger:info(nameOfModule .. ": Set 'objectName' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(name))
+  _G.logger:fine(nameOfModule .. ": Set 'objectName' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(name))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].objectName = name
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'objectName', name, selectedColorObject)
@@ -445,7 +469,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setObjectName", setObjectName)
 
 local function setColorValue(value)
-  _G.logger:info(nameOfModule .. ": Set 'colorValue' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
+  _G.logger:fine(nameOfModule .. ": Set 'colorValue' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorValue = value
   local regionColor = helperFuncs.selectRegionColor(value)
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].regionColor = regionColor
@@ -456,7 +480,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setColorValue", setColorValue)
 
 local function setColorMode(mode)
-  _G.logger:info(nameOfModule .. ": Set 'colorMode' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(mode))
+  _G.logger:fine(nameOfModule .. ": Set 'colorMode' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(mode))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorMode = mode
 
   Script.notifyEvent('MultiColorSelection_OnNewColorMode', mode)
@@ -466,7 +490,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setColorMode", setColorMode)
 
 local function setColorTolerance(value)
-  _G.logger:info(nameOfModule .. ": Set 'colorTolerance' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
+  _G.logger:fine(nameOfModule .. ": Set 'colorTolerance' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].colorTolerance = value
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'colorTolerance', value, selectedColorObject)
@@ -474,7 +498,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setColorTolerance", setColorTolerance)
 
 local function setMinBlobSize(size)
-  _G.logger:info(nameOfModule .. ": Set 'minBlobSize' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(size))
+  _G.logger:fine(nameOfModule .. ": Set 'minBlobSize' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(size))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].minBlobSize = size
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'minBlobSize', size, selectedColorObject)
@@ -482,7 +506,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setMinBlobSize", setMinBlobSize)
 
 local function setMaxBlobSize(size)
-  _G.logger:info(nameOfModule .. ": Set 'maxBlobSize' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(size))
+  _G.logger:fine(nameOfModule .. ": Set 'maxBlobSize' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(size))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maxBlobSize = size
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'maxBlobSize', size, selectedColorObject)
@@ -490,7 +514,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setMaxBlobSize", setMaxBlobSize)
 
 local function setPixelRefactorActive(status)
-  _G.logger:info(nameOfModule .. ": Set 'pixelRefactorActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set 'pixelRefactorActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactorActive = status
 
   Script.notifyEvent("MultiColorSelection_OnNewStatusPixelRefactorActive", status)
@@ -509,7 +533,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setPixelRefactorActive", setPixelRefactorActive)
 
 local function setPixelRefactor(value)
-  _G.logger:info(nameOfModule .. ": Set 'pixelRefactor' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
+  _G.logger:fine(nameOfModule .. ": Set 'pixelRefactor' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactor = value
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].pixelRefactorUseable = value * value
 
@@ -519,7 +543,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setPixelRefactor", setPixelRefactor)
 
 local function setROIActive(status)
-  _G.logger:info(nameOfModule .. ": Set 'roiActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set 'roiActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].roiActive = status
 
   Script.notifyEvent("MultiColorSelection_OnNewStatusROIActive", status)
@@ -529,7 +553,7 @@ Script.serveFunction("CSK_MultiColorSelection.setROIActive", setROIActive)
 
 local function setROIEditor(status)
 
-  _G.logger:info(nameOfModule .. ": Set ROI editor: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set ROI editor: " .. tostring(status))
   roiEditorActive = status
   Script.notifyEvent("MultiColorSelection_OnROIEditorActive", status)
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'roiEditorActive', status)
@@ -538,21 +562,21 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setROIEditor", setROIEditor)
 
 local function setROIType(roiType)
-  _G.logger:info(nameOfModule .. ": Set ROI type: " .. tostring(roiType))
+  _G.logger:fine(nameOfModule .. ": Set ROI type: " .. tostring(roiType))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].type_ROI = roiType
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'setTypeROI', roiType)
 end
 Script.serveFunction('CSK_MultiColorSelection.setROIType', setROIType)
 
 local function resetROI()
-  _G.logger:info(nameOfModule .. ": Reset ROI")
+  _G.logger:fine(nameOfModule .. ": Reset ROI")
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'resetROI', true)
 end
 Script.serveFunction("CSK_MultiColorSelection.resetROI", resetROI)
 
 local function addMaskingROI()
 
-  _G.logger:info(nameOfModule .. ": Add mask.")
+  _G.logger:fine(nameOfModule .. ": Add mask.")
   local temp = {}
   local tempCp = Point.create(100.0, 100.0)
   temp.mask = Shape.createRectangle(tempCp, 100.0, 100.0, 0.0)
@@ -563,7 +587,7 @@ end
 Script.serveFunction('CSK_MultiColorSelection.addMaskingROI', addMaskingROI)
 
 local function setMaskEditor(status)
-  _G.logger:info(nameOfModule .. ": Set mask editor: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set mask editor: " .. tostring(status))
   maskingROIEditorActive = status
   Script.notifyEvent("MultiColorSelection_OnMaskEditorActive", status)
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'maskingROIEditorActive', status)
@@ -571,14 +595,14 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setMaskEditor", setMaskEditor)
 
 local function setMaskingROIType(roiType)
-  _G.logger:info(nameOfModule .. ": Set mask type: " .. tostring(roiType))
+  _G.logger:fine(nameOfModule .. ": Set mask type: " .. tostring(roiType))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].type_maskingROI = roiType
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'setTypeMaskingROI', roiType)
 end
 Script.serveFunction('CSK_MultiColorSelection.setMaskingROIType', setMaskingROIType)
 
 local function resetMask()
-  _G.logger:info(nameOfModule .. ": Reset mask.")
+  _G.logger:fine(nameOfModule .. ": Reset mask.")
   local amount = #multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject]["maskingROIs"]
   while amount >= 2 do
     table.remove(multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject]["maskingROIs"], amount)
@@ -589,7 +613,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.resetMask", resetMask)
 
 local function setMaskingROIActive(status)
-  _G.logger:info(nameOfModule .. ": Set 'maskingROIActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set 'maskingROIActive' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(status))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maskingROIActive = status
 
   Script.notifyEvent("MultiColorSelection_OnNewStatusMaskActive", status)
@@ -598,7 +622,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setMaskingROIActive", setMaskingROIActive)
 
 local function setMinGood(value)
-  _G.logger:info(nameOfModule .. ": Set 'minGood' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
+  _G.logger:fine(nameOfModule .. ": Set 'minGood' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].minGood = value
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'minGood', value, selectedColorObject)
@@ -606,7 +630,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setMinGood", setMinGood)
 
 local function setMaxGood(value)
-  _G.logger:info(nameOfModule .. ": Set 'maxGood' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
+  _G.logger:fine(nameOfModule .. ": Set 'maxGood' of colorObject no." .. tostring(selectedColorObject) .. " to " .. tostring(value))
   multiColorSelection_Instances[selectedInstance].parameters.colorObjects[selectedColorObject].maxGood = value
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'maxGood', value, selectedColorObject)
@@ -614,7 +638,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setMaxGood", setMaxGood)
 
 local function setPipetteEditorActive(status)
-  _G.logger:info(nameOfModule .. ": Set pipette editor: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set pipette editor: " .. tostring(status))
   pipetteActive = status
   Script.notifyEvent("MultiColorSelection_OnPipetteActive", status)
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'pipetteActive', status)
@@ -622,7 +646,7 @@ end
 Script.serveFunction("CSK_MultiColorSelection.setPipetteEditorActive", setPipetteEditorActive)
 
 local function setResultOutput(mode)
-  _G.logger:info(nameOfModule .. ": Set 'resultOutput' to " .. mode)
+  _G.logger:fine(nameOfModule .. ": Set 'resultOutput' to " .. mode)
   multiColorSelection_Instances[selectedInstance].parameters.resultOutput = mode
 
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'resultOutput', mode)
@@ -660,13 +684,36 @@ local function registerOnImageSizeChange(event)
 end
 
 local function setRegisterEvent(event)
-  _G.logger:info(nameOfModule .. ": Set register event: " .. tostring(event))
+  _G.logger:fine(nameOfModule .. ": Set register event: " .. tostring(event))
   multiColorSelection_Instances[selectedInstance].parameters.registeredEvent = event
   Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'registeredEvent', event)
   registerOnImageSizeChange(event)
   Script.notifyEvent('MultiColorSelection_OnNewStatusRegisteredEvent', event)
 end
 Script.serveFunction("CSK_MultiColorSelection.setRegisterEvent", setRegisterEvent)
+
+local function getStatusModuleActive()
+  return _G.availableAPIs.default and _G.availableAPIs.specific
+end
+Script.serveFunction('CSK_MultiColorSelection.getStatusModuleActive', getStatusModuleActive)
+
+local function clearFlowConfigRelevantConfiguration()
+  for i = 1, #multiColorSelection_Instances do
+    multiColorSelection_Instances[i].parameters.registeredEvent = ''
+    Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', i, 'deregisterFromEvent', '')
+    Script.notifyEvent('MultiColorSelection_OnNewStatusRegisteredEvent', '')
+  end
+end
+Script.serveFunction('CSK_MultiColorSelection.clearFlowConfigRelevantConfiguration', clearFlowConfigRelevantConfiguration)
+
+local function getParameters(instanceNo)
+  if instanceNo <= #multiColorSelection_Instances then
+    return helperFuncs.json.encode(multiColorSelection_Instances[instanceNo].parameters)
+  else
+    return ''
+  end
+end
+Script.serveFunction('CSK_MultiColorSelection.getParameters', getParameters)
 
 ----------------------------------------------------------------------------------------
 
@@ -675,12 +722,12 @@ Script.serveFunction("CSK_MultiColorSelection.setRegisterEvent", setRegisterEven
 -- *****************************************************************
 
 local function setParameterName(name)
-  _G.logger:info(nameOfModule .. ": Set parameter name: " .. tostring(name))
+  _G.logger:fine(nameOfModule .. ": Set parameter name: " .. tostring(name))
   multiColorSelection_Instances[selectedInstance].parametersName = name
 end
 Script.serveFunction("CSK_MultiColorSelection.setParameterName", setParameterName)
 
-local function sendParameters()
+local function sendParameters(noDataSave)
   if multiColorSelection_Instances[selectedInstance].persistentModuleAvailable then
 
     CSK_PersistentData.addParameter(helperFuncs.convertTable2Container(multiColorSelection_Instances[selectedInstance].parameters), multiColorSelection_Instances[selectedInstance].parametersName)
@@ -691,8 +738,10 @@ local function sendParameters()
     else
       CSK_PersistentData.setModuleParameterName(nameOfModule, multiColorSelection_Instances[selectedInstance].parametersName, multiColorSelection_Instances[selectedInstance].parameterLoadOnReboot, tostring(selectedInstance))
     end
-    _G.logger:info(nameOfModule .. ": Send MultiColorSelection parameters with name '" .. multiColorSelection_Instances[selectedInstance].parametersName .. "' to CSK_PersistentData module.")
-    CSK_PersistentData.saveData()
+    _G.logger:fine(nameOfModule .. ": Send MultiColorSelection parameters with name '" .. multiColorSelection_Instances[selectedInstance].parametersName .. "' to CSK_PersistentData module.")
+    if not noDataSave then
+      CSK_PersistentData.saveData()
+    end
   else
     _G.logger:warning(nameOfModule .. ": CSK_PersistentData module not available.")
   end
@@ -711,68 +760,96 @@ local function loadParameters()
       Container.add(data, 'colorObjects', colorParams, 'OBJECT')
       Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', selectedInstance, 'FullSetup', data)
       registerOnImageSizeChange(multiColorSelection_Instances[selectedInstance].parameters.registeredEvent)
+      tmrMultiColorSelection:start()
+      return true
     else
       _G.logger:warning(nameOfModule .. ": Loading parameters from CSK_PersistentData module did not work.")
+      tmrMultiColorSelection:start()
+      return false
     end
   else
     _G.logger:warning(nameOfModule .. ": CSK_PersistentData module not available.")
+    tmrMultiColorSelection:start()
+    return false
   end
-  tmrMultiColorSelection:start()
 end
 Script.serveFunction("CSK_MultiColorSelection.loadParameters", loadParameters)
 
 local function setLoadOnReboot(status)
   multiColorSelection_Instances[selectedInstance].parameterLoadOnReboot = status
-  _G.logger:info(nameOfModule .. ": Set new status to load setting on reboot: " .. tostring(status))
+  _G.logger:fine(nameOfModule .. ": Set new status to load setting on reboot: " .. tostring(status))
+  Script.notifyEvent("MultiColorSelection_OnNewStatusLoadParameterOnReboot", status)
 end
 Script.serveFunction("CSK_MultiColorSelection.setLoadOnReboot", setLoadOnReboot)
+
+local function setFlowConfigPriority(status)
+  multiColorSelection_Instances[selectedInstance].parameters.flowConfigPriority = status
+  _G.logger:fine(nameOfModule .. ": Set new status of FlowConfig priority: " .. tostring(status))
+  Script.notifyEvent("MultiColorSelection_OnNewStatusFlowConfigPriority", multiColorSelection_Instances[selectedInstance].parameters.flowConfigPriority)
+end
+Script.serveFunction('CSK_MultiColorSelection.setFlowConfigPriority', setFlowConfigPriority)
 
 --- Function to react on initial load of persistent parameters
 local function handleOnInitialDataLoaded()
 
-  _G.logger:info(nameOfModule .. ': Try to initially load parameter from CSK_PersistentData module.')
-  -- Check if CSK_PersistentData version is > 1.x.x
-  if string.sub(CSK_PersistentData.getVersion(), 1, 1) == '1' then
+  if _G.availableAPIs.default and _G.availableAPIs.specific then
 
-    _G.logger:warning(nameOfModule .. ': CSK_PersistentData module is too old and will not work. Please update CSK_PersistentData module.')
+    _G.logger:fine(nameOfModule .. ': Try to initially load parameter from CSK_PersistentData module.')
+    -- Check if CSK_PersistentData version is > 1.x.x
+    if string.sub(CSK_PersistentData.getVersion(), 1, 1) == '1' then
 
-    for j = 1, #multiColorSelection_Instances do
-      multiColorSelection_Instances[j].persistentModuleAvailable = false
-    end
-  else
+      _G.logger:warning(nameOfModule .. ': CSK_PersistentData module is too old and will not work. Please update CSK_PersistentData module.')
 
-    -- Check if CSK_PersistentData version is >= 3.0.0
-    if tonumber(string.sub(CSK_PersistentData.getVersion(), 1, 1)) >= 3 then
-      local parameterName, loadOnReboot, totalInstances = CSK_PersistentData.getModuleParameterName(nameOfModule, '1')
-      -- Check for amount if instances to create
-      if totalInstances then
-        local c = 2
-        while c <= totalInstances do
-          addInstance()
-          c = c+1
+      for j = 1, #multiColorSelection_Instances do
+        multiColorSelection_Instances[j].persistentModuleAvailable = false
+      end
+    else
+
+      -- Check if CSK_PersistentData version is >= 3.0.0
+      if tonumber(string.sub(CSK_PersistentData.getVersion(), 1, 1)) >= 3 then
+        local parameterName, loadOnReboot, totalInstances = CSK_PersistentData.getModuleParameterName(nameOfModule, '1')
+        -- Check for amount if instances to create
+        if totalInstances then
+          local c = 2
+          while c <= totalInstances do
+            addInstance()
+            c = c+1
+          end
         end
       end
-    end
 
-
-    for i = 1, #multiColorSelection_Instances do
-
-      local parameterName, loadOnReboot = CSK_PersistentData.getModuleParameterName(nameOfModule, tostring(i))
-
-      if parameterName then
-        multiColorSelection_Instances[i].parametersName = parameterName
-        multiColorSelection_Instances[i].parameterLoadOnReboot = loadOnReboot
+      if not multiColorSelection_Instances then
+        return
       end
 
-      if multiColorSelection_Instances[i].parameterLoadOnReboot then
-        setInstance(i)
-        loadParameters()
+      for i = 1, #multiColorSelection_Instances do
+
+        local parameterName, loadOnReboot = CSK_PersistentData.getModuleParameterName(nameOfModule, tostring(i))
+
+        if parameterName then
+          multiColorSelection_Instances[i].parametersName = parameterName
+          multiColorSelection_Instances[i].parameterLoadOnReboot = loadOnReboot
+        end
+
+        if multiColorSelection_Instances[i].parameterLoadOnReboot then
+          setInstance(i)
+          loadParameters()
+        end
       end
+      Script.notifyEvent('MultiColorSelection_OnDataLoadedOnReboot')
     end
-    Script.notifyEvent('MultiColorSelection_OnDataLoadedOnReboot')
   end
 end
 Script.register("CSK_PersistentData.OnInitialDataLoaded", handleOnInitialDataLoaded)
+
+local function resetModule()
+  if _G.availableAPIs.default and _G.availableAPIs.specific then
+    clearFlowConfigRelevantConfiguration()
+    pageCalled()
+  end
+end
+Script.serveFunction('CSK_MultiColorSelection.resetModule', resetModule)
+Script.register("CSK_PersistentData.OnResetAllModules", resetModule)
 
 -- *************************************************
 -- END of functions for CSK_PersistentData module usage
