@@ -4,9 +4,10 @@
   max-width: none;
 }
 
-.myViewer_CSK_Module_MultiColorSelection > div > div {
-  max-height: 600px;
-  min-height: 600px;
+.myViewer_CSK_Module_MultiColorSelection {
+  width: 98%;
+  height: 600px;
+  margin: auto;
 }
 
 .myCustomPlaceholder5pxHeight_CSK_Module_MultiColorSelection {
