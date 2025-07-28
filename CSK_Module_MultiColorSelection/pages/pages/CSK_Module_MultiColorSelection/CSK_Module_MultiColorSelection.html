@@ -7,13 +7,12 @@
         <layout-row id="RowLayout30" style="flex-grow: 0; flex-shrink: 0">
             <layout-column id="ColumnLayout41" style="align-items: stretch">
                 <layout-row id="RowLayout01" style="align-items: baseline; flex-grow: 0; flex-shrink: 0">
-                    <davinci-value-display id="VD_Title" class="myCustomLabel_CSK_Module_MultiColorSelection"
-                        value="Color Inspection">
-                    </davinci-value-display>
+                    <h1 id="Heading_Title" class="myCustomLabel_CSK_Module_MultiColorSelection">
+                        Color Inspection
+                    </h1>
                     <davinci-value-display id="VD_Version">
-                        <crown-edpws-binding property="value" name="CSK_MultiColorSelection/OnNewStatusModuleVersion"
-                            update-on-resume>
-                        </crown-edpws-binding>
+                        <crown-on property="value" crown-event="CSK_MultiColorSelection/OnNewStatusModuleVersion">
+                        </crown-on>
                     </davinci-value-display>
                 </layout-row>
             </layout-column>
@@ -64,8 +63,8 @@
                                                             style="align-items: center; justify-content: center">
                                                             <davinci-button id="B_AddInstance"
                                                                 class="myCustomButton_CSK_Module_MultiColorSelection"
-                                                                type="outline" icon-position="append" icon="content/add"
-                                                                title="Add instance">
+                                                                type="outline" title="Add instance">
+                                                                <davinci-icon icon="content/add"></davinci-icon>
                                                                 <span></span>
                                                                 <crown-binding event="submit"
                                                                     name="CSK_MultiColorSelection/addInstance"
@@ -74,9 +73,9 @@
                                                             </davinci-button>
                                                             <davinci-button id="B_ResetInstances"
                                                                 class="myCustomButton_CSK_Module_MultiColorSelection"
-                                                                type="outline" icon-position="append"
-                                                                title="Reset instances to one single instance. New setup needs to be saved and restart app to clear old threads."
-                                                                icon="action/delete">
+                                                                type="outline"
+                                                                title="Reset instances to one single instance. New setup needs to be saved and restart app to clear old threads.">
+                                                                <davinci-icon icon="action/delete"></davinci-icon>
                                                                 <span></span>
                                                                 <crown-binding event="submit"
                                                                     name="CSK_MultiColorSelection/resetInstances"
@@ -129,9 +128,10 @@
                                                                     style="justify-content: center; align-items: center">
                                                                     <davinci-button id="B_LoadConfig"
                                                                         class="myCustomButton_CSK_Module_MultiColorSelection"
-                                                                        type="outline" icon-position="append"
-                                                                        title="Load configured parameters from CSK_PersistentData module."
-                                                                        icon="action/history">
+                                                                        type="outline"
+                                                                        title="Load configured parameters from CSK_PersistentData module.">
+                                                                        <davinci-icon icon="action/history">
+                                                                        </davinci-icon>
                                                                         <span></span>
                                                                         <crown-binding event="submit"
                                                                             name="CSK_MultiColorSelection/loadParameters"
@@ -145,9 +145,10 @@
                                                                     </davinci-button>
                                                                     <davinci-button id="B_SaveConfig"
                                                                         class="myCustomButton_CSK_Module_MultiColorSelection"
-                                                                        type="outline" icon-position="append"
-                                                                        title="Save current configured parameters of this module within CSK_PersistentData module."
-                                                                        icon="content/save">
+                                                                        type="outline"
+                                                                        title="Save current configured parameters of this module within CSK_PersistentData module.">
+                                                                        <davinci-icon icon="content/save">
+                                                                        </davinci-icon>
                                                                         <span></span>
                                                                         <crown-binding event="submit"
                                                                             name="CSK_MultiColorSelection/sendParameters"
@@ -320,22 +321,22 @@
                                                             </layout-column>
                                                             <layout-column id="ColumnLayout4"
                                                                 style="align-items: stretch">
-												<davinci-text-field id="TF_RegisteredEvent" type="text"
-													title="Process images receiving from this event, like 'CSK_ImagePlayer.OnNewImage'"
-													label="e.g. CSK_ImagePlayer.OnNewImage">
-												<crown-edpws-binding property="value"
-													name="CSK_MultiColorSelection/OnNewStatusRegisteredEvent"
-													update-on-resume>
-												</crown-edpws-binding>
-												<crown-binding event="change"
-													name="CSK_MultiColorSelection/setRegisterEvent"
-													path="param/args/event" auto-commit>
-												</crown-binding>
-												<crown-edpws-binding property="disabled"
-													name="CSK_MultiColorSelection/OnNewStatusFlowConfigPriority"
-													update-on-resume>
-												</crown-edpws-binding>
-												</davinci-text-field>
+                                                                <davinci-text-field id="TF_RegisteredEvent" type="text"
+                                                                    title="Process images receiving from this event, like 'CSK_ImagePlayer.OnNewImage'"
+                                                                    label="e.g. CSK_ImagePlayer.OnNewImage">
+                                                                    <crown-edpws-binding property="value"
+                                                                        name="CSK_MultiColorSelection/OnNewStatusRegisteredEvent"
+                                                                        update-on-resume>
+                                                                    </crown-edpws-binding>
+                                                                    <crown-binding event="change"
+                                                                        name="CSK_MultiColorSelection/setRegisterEvent"
+                                                                        path="param/args/event" auto-commit>
+                                                                    </crown-binding>
+                                                                    <crown-edpws-binding property="disabled"
+                                                                        name="CSK_MultiColorSelection/OnNewStatusFlowConfigPriority"
+                                                                        update-on-resume>
+                                                                    </crown-edpws-binding>
+                                                                </davinci-text-field>
                                                             </layout-column>
                                                         </layout-row>
                                                         <davinci-value-display id="VD_ProcessingStep"
@@ -1015,10 +1016,10 @@
                                                                                 style="align-items: stretch; align-self: flex-end">
                                                                                 <davinci-button id="B_Pipette"
                                                                                     class="myCustomButton_CSK_Module_MultiColorSelection"
-                                                                                    type="outline"
-                                                                                    icon-position="append" toggle
-                                                                                    icon="image/colorize"
+                                                                                    type="outline" toggle
                                                                                     title="Use pipette in image to select color">
+                                                                                    <davinci-icon icon="image/colorize">
+                                                                                    </davinci-icon>
                                                                                     <span></span>
                                                                                     <crown-binding event="change"
                                                                                         name="CSK_MultiColorSelection/setPipetteEditorActive"
@@ -1340,39 +1341,31 @@
                                                                                     id="VD_MinOfFoundBlobs" value="-"
                                                                                     label="MinFoundBlobSize"
                                                                                     style="height: 100%">
-                                                                                    <crown-edpws-binding property="unit"
-                                                                                        name="CSK_MultiColorSelection/OnNewPixelRefactorUnit"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
-                                                                                    <crown-edpws-binding
-                                                                                        property="value"
-                                                                                        name="CSK_MultiColorSelection/OnNewSizeSmallestBlob"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
+                                                                                    <crown-on property="unit"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewPixelRefactorUnit">
+                                                                                    </crown-on>
+                                                                                    <crown-on property="value"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewSizeSmallestBlob">
+                                                                                    </crown-on>
                                                                                 </davinci-value-display>
                                                                                 <davinci-value-display
                                                                                     id="VD_FoundBlobs"
                                                                                     label="Found Blobs" value="-">
-                                                                                    <crown-edpws-binding
-                                                                                        property="value"
-                                                                                        name="CSK_MultiColorSelection/OnNewFoundBlobs"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
+                                                                                    <crown-on property="value"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewFoundBlobs">
+                                                                                    </crown-on>
                                                                                 </davinci-value-display>
                                                                             </layout-column>
                                                                             <layout-column id="ColumnLayout14">
                                                                                 <davinci-value-display
                                                                                     id="VD_MaxOfFoundBlobs" value="-"
                                                                                     label="MaxFoundBlobSize">
-                                                                                    <crown-edpws-binding property="unit"
-                                                                                        name="CSK_MultiColorSelection/OnNewPixelRefactorUnit"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
-                                                                                    <crown-edpws-binding
-                                                                                        property="value"
-                                                                                        name="CSK_MultiColorSelection/OnNewSizeBiggestBlob"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
+                                                                                    <crown-on property="unit"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewPixelRefactorUnit">
+                                                                                    </crown-on>
+                                                                                    <crown-on property="value"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewSizeBiggestBlob">
+                                                                                    </crown-on>
                                                                                 </davinci-value-display>
                                                                             </layout-column>
                                                                         </layout-row>
@@ -1441,28 +1434,22 @@
                                                                                 <davinci-value-display
                                                                                     id="VD_ProcessingTime"
                                                                                     label="Processing time:" unit="ms">
-                                                                                    <crown-edpws-binding
-                                                                                        property="value"
-                                                                                        name="CSK_MultiColorSelection/OnNewProcessingTime"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
+                                                                                    <crown-on property="value"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewProcessingTime">
+                                                                                    </crown-on>
                                                                                 </davinci-value-display>
                                                                                 <davinci-value-display id="VD_QueueSize"
                                                                                     label="Queue size:">
-                                                                                    <crown-edpws-binding
-                                                                                        property="value"
-                                                                                        name="CSK_MultiColorSelection/OnNewImageQueue"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
+                                                                                    <crown-on property="value"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewImageQueue">
+                                                                                    </crown-on>
                                                                                 </davinci-value-display>
                                                                                 <davinci-value-display
                                                                                     id="VD_OutputResult"
                                                                                     label="Result Output:">
-                                                                                    <crown-edpws-binding
-                                                                                        property="value"
-                                                                                        name="CSK_MultiColorSelection/OnNewResult"
-                                                                                        update-on-resume>
-                                                                                    </crown-edpws-binding>
+                                                                                    <crown-on property="value"
+                                                                                        crown-event="CSK_MultiColorSelection/OnNewResult">
+                                                                                    </crown-on>
                                                                                 </davinci-value-display>
                                                                             </layout-column>
                                                                             <layout-column id="ColumnLayout20"

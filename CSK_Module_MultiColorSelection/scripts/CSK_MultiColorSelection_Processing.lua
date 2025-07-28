@@ -391,9 +391,11 @@ local function handleOnNewProcessing(image, timestamp)
 
           viewer:present()
 
-          Script.notifyEvent("MultiColorSelection_OnNewValueToForward" .. multiColorSelectionInstanceNumberString, 'MultiColorSelection_OnNewFoundBlobs', tostring(#blobs))
-          Script.notifyEvent("MultiColorSelection_OnNewValueToForward" .. multiColorSelectionInstanceNumberString, 'MultiColorSelection_OnNewSizeSmallestBlob', string.format("%.1f",(blobMin)))
-          Script.notifyEvent("MultiColorSelection_OnNewValueToForward" .. multiColorSelectionInstanceNumberString, 'MultiColorSelection_OnNewSizeBiggestBlob', string.format("%.1f",(blobMax)))
+          if processingParams['activeInUI'] then
+            Script.notifyEvent("MultiColorSelection_OnNewValueToForward" .. multiColorSelectionInstanceNumberString, 'MultiColorSelection_OnNewFoundBlobs', tostring(#blobs))
+            Script.notifyEvent("MultiColorSelection_OnNewValueToForward" .. multiColorSelectionInstanceNumberString, 'MultiColorSelection_OnNewSizeSmallestBlob', string.format("%.1f",(blobMin)))
+            Script.notifyEvent("MultiColorSelection_OnNewValueToForward" .. multiColorSelectionInstanceNumberString, 'MultiColorSelection_OnNewSizeBiggestBlob', string.format("%.1f",(blobMax)))
+          end
 
           return
         end

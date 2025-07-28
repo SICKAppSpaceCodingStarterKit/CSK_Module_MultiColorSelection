@@ -50,10 +50,9 @@ local multiColorSelection_Instances = {} -- Handle all instances
 local multiColorSelectionController = require('ImageProcessing/MultiColorSelection/MultiColorSelection_Controller')
 
 if _G.availableAPIs.default and _G.availableAPIs.specific then
-  local setInstanceHandle = require('ImageProcessing/MultiColorSelection/FlowConfig/MultiColorSelection_FlowConfig')
+  require('ImageProcessing/MultiColorSelection/FlowConfig/MultiColorSelection_FlowConfig')
   table.insert(multiColorSelection_Instances, multiColorSelection_Model.create(1))
   multiColorSelectionController.setMultiColorSelection_Instances_Handle(multiColorSelection_Instances)
-  setInstanceHandle(multiColorSelection_Instances)
 else
   _G.logger:warning("CSK_MultiColorSelection: Relevant CROWN(s) not available on device. Module is not supported...")
 end

@@ -699,9 +699,11 @@ Script.serveFunction('CSK_MultiColorSelection.getStatusModuleActive', getStatusM
 
 local function clearFlowConfigRelevantConfiguration()
   for i = 1, #multiColorSelection_Instances do
-    multiColorSelection_Instances[i].parameters.registeredEvent = ''
-    Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', i, 'deregisterFromEvent', '')
-    Script.notifyEvent('MultiColorSelection_OnNewStatusRegisteredEvent', '')
+    if multiColorSelection_Instances[i].parameters.flowConfigPriority then
+      multiColorSelection_Instances[i].parameters.registeredEvent = ''
+      Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', i, 'deregisterFromEvent', '')
+      Script.notifyEvent('MultiColorSelection_OnNewStatusRegisteredEvent', '')
+    end
   end
 end
 Script.serveFunction('CSK_MultiColorSelection.clearFlowConfigRelevantConfiguration', clearFlowConfigRelevantConfiguration)
@@ -754,6 +756,8 @@ local function loadParameters()
     if data then
       _G.logger:info(nameOfModule .. ": Loaded parameters for multiColorSelectionInstance " .. tostring(selectedInstance) .. " from CSK_PersistentData module.")
       multiColorSelection_Instances[selectedInstance].parameters = helperFuncs.convertContainer2Table(data)
+
+      multiColorSelection_Instances[selectedInstance].parameters = helperFuncs.checkParameters(multiColorSelection_Instances[selectedInstance].parameters, helperFuncs.defaultParameters.getParameters())
 
       -- Send config to instances
       local colorParams = helperFuncs.convertTable2Container(multiColorSelection_Instances[selectedInstance].parameters.colorObjects)
@@ -844,7 +848,11 @@ Script.register("CSK_PersistentData.OnInitialDataLoaded", handleOnInitialDataLoa
 
 local function resetModule()
   if _G.availableAPIs.default and _G.availableAPIs.specific then
-    clearFlowConfigRelevantConfiguration()
+    for i = 1, #multiColorSelection_Instances do
+      multiColorSelection_Instances[i].parameters.registeredEvent = ''
+      Script.notifyEvent('MultiColorSelection_OnNewProcessingParameter', i, 'deregisterFromEvent', '')
+      Script.notifyEvent('MultiColorSelection_OnNewStatusRegisteredEvent', '')
+    end
     pageCalled()
   end
 end
